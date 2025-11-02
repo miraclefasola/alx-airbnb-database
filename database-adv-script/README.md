@@ -49,9 +49,9 @@ FROM Property
 LEFT JOIN Review 
     ON Property.property_id = Review.property_id
 ORDER BY property_name;
-
-3. FULL OUTER JOIN – All Users and All Bookings
-
+```
+### 3. FULL OUTER JOIN – All Users and All Bookings
+```
 Show all users and all bookings, including users without bookings and bookings without users.
 Since MySQL doesn’t support FULL OUTER JOIN, use a UNION workaround:
 
@@ -78,3 +78,33 @@ SELECT
     Booking.created_at AS booking_time
 FROM Booking
 RIGHT JOIN User ON Booking.user_id = User.user_id;
+```
+#### 4. Total number of bookings made by each user, using the COUNT function and GROUP BY clause.
+```
+SELECT 
+    User.first_name,
+    COUNT(Booking.booking_id) AS total_booking
+FROM User
+left JOIN Booking ON Booking.user_id = User.user_id
+GROUP BY User.first_name;
+
+```
+##### 5 window function (ROW_NUMBER, RANK) to rank properties based on the total number of bookings they have received.
+```
+
+SELECT 
+    Property.property_id,
+    User.first_name AS host_name,
+    Property.name,
+    Property.description,
+    Property.location,
+    RANK() OVER (ORDER BY Property.name ASC) AS rank
+FROM Property
+LEFT JOIN User 
+    ON Property.host_id = User.user_id;
+
+SELECT 
+    Property.name
+    Property.pricepernight
+    ROW_NUMBER() OVER (ORDER BY Property.pricepernight) AS ROW_NUMBER
+FROM Property;

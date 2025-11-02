@@ -21,6 +21,8 @@ FROM Booking
 INNER JOIN User ON Booking.user_id = User.user_id
 INNER JOIN Property ON Booking.property_id = Property.property_id
 LEFT JOIN Payment ON Booking.booking_id = Payment.booking_id
+WHERE b.start_date >= '2024-01-01'
+  AND pay.status = 'completed'
 ORDER BY Booking.created_at DESC;
 
 -- Step 2: Analyze Query Performance (using EXPLAIN)

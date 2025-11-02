@@ -1,17 +1,33 @@
+# 🧠 Database Index Performance Report
 
+## 📌 Objective
+To improve query performance in the Airbnb database by creating indexes on high-usage columns within the `User`, `Booking`, and `Property` tables.
 
+The goal was to:
+- Identify frequently queried columns.
+- Create appropriate indexes to speed up joins, filters, and sorting operations.
+- Measure query performance before and after adding indexes.
 
-CREATE INDEX idx_user_email ON User (email);
+---
 
-CREATE INDEX idx_property_host ON Property (host_id);
+## ⚙️ Tables Analyzed
+| Table | Commonly Queried Columns | Purpose |
+|--------|--------------------------|----------|
+| **User** | `email`, `user_id` | User lookup and join with bookings |
+| **Booking** | `user_id`, `property_id`, `start_date` | Joins, filters, and sorting |
+| **Property** | `property_id`, `name` | Property identification and display |
 
-CREATE INDEX idx_booking_property ON Booking (property_id);
+---
 
-CREATE INDEX idx_booking_user ON Booking (user_id);
+## 🧩 Index Creation
 
-CREATE INDEX idx_payment_booking ON Payment (booking_id);
+```sql
+-- Speed up user lookups
+CREATE INDEX idx_user_email ON User(email);
 
-EXPLAIN SELECT *
-FROM Booking
-JOIN User ON Booking.user_id = User.user_id
-WHERE User.email = 'someone@email.com';
+-- Speed up join operations
+CREATE INDEX idx_booking_user_id ON Booking(user_id);
+CREATE INDEX idx_booking_property_id ON Booking(property_id);
+
+-- Improve ORDER BY performance
+CREATE INDEX idx_booking_start_date ON Booking(start_date);
